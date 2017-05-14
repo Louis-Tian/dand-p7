@@ -32,14 +32,14 @@ The question is shown after users have clicked the "Start free trail" button. He
 The `Click-through-probability` is the ratio of `number of clicks` and `number of cookies`. As both `number of cookies` and `number of clicks` are expected to be invariant, we will expect `click-through-probability` to be invariant too.
 
 ##### 5. Gross conversion (Evaluation)
-If the experiment is effective, we expect to see the `gross conversion` to decrease. That is we expect fewer proportion of student will complete the enrollment process. To launch the experiment, we requires the gross conversion in the experiment group to be both statistically and practically significantly less than the one from our control group.
+If the experiment is effective, we expect to see the `gross conversion` to decrease. That is we expect fewer proportion of student will complete the enrollment process. To launch the experiment, we requires the gross conversion to be both statistically and practically significantly less in the experiment group.
 
 ##### 6. Retention (Evaluation*)
 If the experiment is effective, we would expect the experiment group to have a higher retention as the experiment. In order for us to launch the experiment, we require the `retention` in our experiment group to be both statistically and practically greater than the one in our control group.
 (As it turns out, this metrics required too long to complete for the given alpha and beta, and hence not used in the final evaluation )
 
 ##### 7. Net conversion (Evaluation)
-`Net conversion` is the ratio of the `number of user-ids remind enrolled pass the trail` over the `number of clicks`. Because our experiment hypothesis states that the experiment would not "significantly reducing the number of students to continue past the free trial", and as discussed earlier that we expect the number of clicks to be invariant, it follows that we expect the `net conversion` to doesn't change significantly. Hence, in order for us to launch the experiment, we require the difference of `net conversion` between the two groups to be small, both statistically and practically.
+`Net conversion` is the ratio of the `number of user-ids remind enrolled pass the trail` over the `number of clicks`. Because our hypothesis states that the experiment would not "significantly reduce the number of students to continue past the free trial", and as discussed earlier that we expect the number of clicks to be invariant, it follows that we expect the `net conversion` to doesn't change significantly. Hence, in order for us to launch the experiment, we require the difference of `net conversion` between the two groups to be small, both statistically and practically.
 
 ### Measuring Standard Deviation
 >List the standard deviation of each of your evaluation metrics. (These should be the answers from the "Calculating standard deviation" quiz.)
@@ -71,11 +71,16 @@ Using alpha = 0.05 and beta = 0.2, a total of 685,275 page views is required to 
 
 > Give your reasoning for the fraction you chose to divert. How risky do you think this experiment would be for Udacity?
 
-I don't think this particular experiment is particularly risky. Asking a single question before enrollment is not likely to cause bad user experiment.
+**Risks**
+The experiment is not a risky one. It does not expose the users to risk that exceeds the "minimal risk" level. No sensitive information is involved in the experiment. Asking an extra question about time available has hard any physical, psychological, emotional, social and economic effects on the users.
 
-However, it is always a good practice to expose the experiment to a smaller subset of traffic whenever possible. There could be a bad implementation problem that causes user unable to complete the enrollment. And no matter how careful you are, there are always risks involved (i.e. Black Swan events).
+**Exposure and Duration**
+Even for experiments with minimal risk, it is always a good practice to expose the experiment to a smaller subset of traffic whenever possible. This is because no matter how careful you are, there are always some risk involved. For example, there could be a bad implementation problem that causes user unable to complete the enrollment. Running experiment on 100% of the traffic also prevents other experiment being run at the same time.
 
-Therefore, I would divert 50% of the traffic to this experiment. Based on this, the experiment would take 35 days to complete.
+On the other side, the trade-off to exposing only part of the users to experiments is longer experiments
+duration. Running longer experiments might be more costly (ie. idle resources waiting for experiment result). One might also argue, a shorter duration is preferred in an "Agile" environment. As it allows for shorter feedback cycle.
+
+The decision on the duration and exposure trade-off is ultimately subjective and depends on external factors other than the experiment itself. Personally, I would divert 50% of the traffic to this experiment. It would take 35 days to complete. If everything go well and there is no other experiment need to run at the same time, I might then speed up the experiment by diverge more traffic to it.
 
 ## Experiment Analysis
 ### Sanity Checks
@@ -89,14 +94,21 @@ Therefore, I would divert 50% of the traffic to this experiment. Based on this, 
 | Number of clicks on "Start free trail" | 0.4959 | 0.5041 | 0.5005 | Yes |
 | Click-through-probability on "Start free trail" | -0.0013 | 0.0013 | 0.0001 | Yes |
 
+The table above shows the lower and upper bound of the confidence interval of each metrics. The observed value for both metrics are within the confidence interval, meaning there is no statically significant difference between the control and the experiment groups for each invariant metrics. Hence,
+we can continue with our experiment.
+
 ### Result Analysis
 >Effect Size Tests
 For each of your evaluation metrics, give a 95% confidence interval around the difference between the experiment and control groups. Indicate whether each metric is statistically and practically significant. (These should be the answers from the "Effect Size Tests" quiz.)
 
-| Invariant Metrics | Lower bound | Upper bound | Statistically significant | Practically significant |
+| Evaluation Metrics | Lower bound | Upper bound | Statistically significant | Practically significant |
 | --- | --- | --- | --- |
 | Gross conversion | -0.029123 | -0.011986 | Yes | Yes |
 | Net conversion | -0.011605 | 0.001857 | No | No |
+
+The table above calculates the lower and upper bounds of the confidence interval of the differences between control and experiment group for evaluation metrics. Because the lower bound for the difference of gross conversion is smaller than zero, we can conclude that the difference of `Gross conversion` is statistically significant. Similarly, because zero is within the CI for `Net conversion`, we conclude that the `Net conversion` is not statistically significant.
+
+The practical significant level for `Gross conversion` and `Net conversion` are 0.01 and 0.0075 respectively. Because the absolute value of the lower bound of `Gross conversion` is greater than 0.01, it is practically significant. And because, the practically significant interval of -0.0075 to 0.0075 overlaps with the CI for `Net conversion`, we conclude that the `Net conversion` is *NOT* practically significant.
 
 ### Sign Tests
 >For each of your evaluation metrics, do a sign test using the day-by-day data, and report the p-value of the sign test and whether the result is statistically significant. (These should be the answers from the "Sign Tests" quiz.)
@@ -106,10 +118,16 @@ For each of your evaluation metrics, give a 95% confidence interval around the d
 | Gross conversion | 0.0026  | Yes |
 | Net conversion | 0.6776 | No |
 
+The p-value for gross conversion is 0.0026. This is saying that if there is no actual difference in gross conversion, then there is only 0.26% of the chance that we would observe the experiment result. Because 0.26% is well below our significant level 0f 5%, we conclude the difference for `Gross conversion` is significant.
+
+The p-value for `Net conversion` says there is a 67% of the probability that we would get the result just by chance. Hence it is not statistically significant.
+
 ### Summary
 >State whether you used the Bonferroni correction, and explain why or why not. If there are any discrepancies between the effect size hypothesis tests and the sign tests, describe the discrepancy and why you think it arose.
 
-I didn't use Bonferroni correction. The two metrics Gross conversion and net conversion is most likely to be highly corrected.ß
+I didn't use Bonferroni correction.
+
+The two metrics Gross conversion and net conversion is most likely to be highly corrected.ß
 Using Bonferroni correction will cause the tests to be too conservative.
 
 There is no discrepancy between the effect size test and sign test. The difference in gross conversion is significant is both tests, and the difference in net conversion is not in both case.
