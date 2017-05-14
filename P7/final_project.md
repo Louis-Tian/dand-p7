@@ -118,17 +118,18 @@ The practical significant level for `Gross conversion` and `Net conversion` are 
 | Gross conversion | 0.0026  | Yes |
 | Net conversion | 0.6776 | No |
 
-The p-value for gross conversion is 0.0026. This is saying that if there is no actual difference in gross conversion, then there is only 0.26% of the chance that we would observe the experiment result. Because 0.26% is well below our significant level 0f 5%, we conclude the difference for `Gross conversion` is significant.
+The p-value for `Gross conversion` is 0.0026, meaning if there is no difference in `Gross conversion`, then the chance of us getting the observed experiment result (signs) is only 0.26%. Because 0.26% is well below our significant level 0f 5%, we conclude the difference for `Gross conversion` is significant.
 
-The p-value for `Net conversion` says there is a 67% of the probability that we would get the result just by chance. Hence it is not statistically significant.
+On contrast, the p-value for `Net conversion` is 67%, well above of 5% significant level. Hence it is not statistically significant.
 
 ### Summary
 >State whether you used the Bonferroni correction, and explain why or why not. If there are any discrepancies between the effect size hypothesis tests and the sign tests, describe the discrepancy and why you think it arose.
 
 I didn't use Bonferroni correction.
 
-The two metrics Gross conversion and net conversion is most likely to be highly corrected.ß
-Using Bonferroni correction will cause the tests to be too conservative.
+Bonferroni correction is used to correct the false positive probability of a decision rule, when the decision involves multiple hypothesis tests. The reason is that when we have two hypothesis test at 5% significant level. If our decision rule is to launch the experiment when any of the two hypothesis tests return positive result then there is a 9.75% (1-0.95^2) probability of us making a false positive decision, much large than the individual 5%.
+
+However, our decision rule is to launch the experiment when there is a significant difference in `Gross conversion` and there is doesn't *not* having a significant difference in `Net conversion`. We actually want to have the second test to be not significant. Not only we want both (vs. any) of the tests to meet our expectation but also the we actually want the second test to be negative. Hence, Bonferroni correction is not applicable here.  
 
 There is no discrepancy between the effect size test and sign test. The difference in gross conversion is significant is both tests, and the difference in net conversion is not in both case.
 
@@ -137,24 +138,20 @@ There is no discrepancy between the effect size test and sign test. The differen
 
 Based on the result, I will recommend launch the experiment.
 
-The gross conversion is both statistically and practically significantly lower in the experiment group, This is what we expected in order to launch. Similarly, the net conversion in group experiment is not significantly different from our control. This is also waht we expected in order to launch the experiment.
+The gross conversion is both statistically and practically significantly lower in the experiment group, This is what we expected in order to launch. Similarly, the net conversion in group experiment is not significantly different from our control. This is also what we expected in order to launch the experiment.
 
 ## Follow-Up Experiment
 >Give a high-level description of the follow-up experiment you would run, what your hypothesis would be, what metrics you would want to measure, what your unit of diversion would be, and your reasoning for these choices.
 
 #### description
-This experiment we have examined in this project asked the student on the amount of time they had available to devote to the course. While time is an important factor, lack of prerequisite skills and experience could also
-cause students' frustration.
-
-I propose to have questions that ask students about their previous experience, for example, whether the student has any coding experience in Python. If the user doesn't have any of the specified skills required for a course, then it should suggests the student to enrol in the more appropriate course or degree instead (i.e. introduction to programming)
+Competition are frequency used as a motivational tool in education and many other areas (i.e. gaming). It is highly effective when used right. I was hooked on Kaggle Competition once I discovered it. Udacity could adopt some similar competition mechanism like monthly best project. The students who submitted the best project would receive reward like a free tuition for the month.
 
 #### hypothesis
 _null hypothesis_: asking questions regarding student background before the student will not change the net conversion significantly.
 _alternative hypothesis_: asking questions regarding student background before the student will increase the net conversion significantly.
 
 #### unit of diversion
-The proposed experiment is essentially the same as the one we have examined in the project. Hence, the
-same unit of diversion could be used (cookies).
+The proposed experiment is essentially the same as the one we have examined in the project. Hence, the same unit of diversion could be used (cookies).
 
 #### Invariant metrics
 As the nature of the experiment is essentially the same, we could use the same metrics used in this project including, number of clicks, number of unique cookies,
