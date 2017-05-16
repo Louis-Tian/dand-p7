@@ -1,5 +1,5 @@
-
 # Final Plots and Summary
+===
 
 ### Plot One
 ```{r echo=FALSE, Plot_One, fig.cap='Correlation Matrix for red wine attributes'}

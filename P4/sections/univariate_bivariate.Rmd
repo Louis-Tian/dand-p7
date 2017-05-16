@@ -88,7 +88,8 @@ It seems both median and 75% quantile increases as quality increases. However, t
 group = dplyr::group_by(wine, quality)
 
 knitr::kable(
-  dplyr::summarise(group, median=median(fixed.acidity), '75%'=quantile(fixed.acidity, 0.75))
+  dplyr::summarise(group, median=median(fixed.acidity), 
+                   '75%'=quantile(fixed.acidity, 0.75))
 )
 ```
 However, this could be caused by much smaller sample size. As we can see the variance of both are much large than the rest.
@@ -144,7 +145,7 @@ makeHisto('residual.sugar', binwidth = 0.1)
 makeDensity('residual.sugar')
 ```
 There isn't much going here. The distributions looks normal. Maybe a little long 
-tail with a few outlier.
+tail with a few outliers.
 
 ```{r, echo=FALSE, fig.cap='Quanlity vs Redisual Sugar (limit from 1 to 4)'}
 p1 <- makeBoxPlot('residual.sugar')
@@ -160,7 +161,7 @@ It is somewhat surprising to me that I don't see any relationship between residu
 ```{r, echo=FALSE, fig.cap='Histogram for Chlorides'}
 makeHisto('chlorides', 0.005)
 ```
-Again very standard distribution. But a outlier might have caused some problem.
+Again very standard distribution. But outliers might have caused some problem. Let me try to discard those above 0.2 and see what happens.
 
 ```{r, echo=FALSE, fig.cap="Histogram for Chlorides (<0.2)"}
 ggplot(aes(x=chlorides, fill=quality), data=wine[wine$chlorides < 0.2,])  +
@@ -172,7 +173,7 @@ ggplot(aes(x=chlorides, fill=quality), data=wine[wine$chlorides < 0.2,])  +
   xlab('chlorides')
 ```
 
-No, things look still pretty normally distributed.
+It still looks normally distributed.
 
 ```{r, echo=FALSE, fig.cap='Density for Chlorides'}
 makeDensity('chlorides')
