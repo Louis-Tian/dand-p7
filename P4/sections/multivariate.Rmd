@@ -1,0 +1,48 @@
+# Multivariate Plots Section
+===
+
+In the previous section, I found that alcohol, volatile acidity and citric acid seems to be the best predictor of quality. I wonder whether combining those three will give me a good explanation.
+
+First, let me try two variable at a time.
+
+```{r echo=FALSE}
+wine$quality = factor(wine$quality)
+
+makeScatter <- function(x, y) {
+  ggplot(aes(color=quality), data=wine) + 
+    geom_point(aes_string(x=x, y=y), alpha=0.8, size=0.8) +
+    scale_color_brewer(type='div') + 
+    theme_dark()+
+    theme(aspect.ratio = 1, legend.position=c(0.9,0.7), legend.title.align = 0)
+}
+
+makeScatter("alcohol", 'volatile.acidity')
+```
+Low-quality wines are located towards the left top part of the plot and High-quality ones towards the bottom right. Using the diverging colour scheme, the separation between low and high quality is quite clear.
+
+```{r echo=FALSE, Multivariate_Plots}
+makeScatter("alcohol", 'citric.acid')
+```
+Again, quite good seperation between the teal and brown color. 
+
+
+```{r echo=FALSE,}
+makeScatter("volatile.acidity", 'citric.acid')
+```
+Not as good as the previous too but still you can see the pattern. 
+
+Now, how about combine all of the three together.
+```{r, fig.width=6, fig.height=6, fig.fullwidth=TRUE}
+labels <- c('Very low citric.acid', 'Low citirc.acid', "High citric.acid", "Very high citric.acid")
+
+ggplot(aes(color=quality), data=wine) + 
+  geom_point(aes(x=alcohol, y=volatile.acidity), size=1) +
+  scale_color_brewer(type='div', palette=1) +
+  theme_dark() +
+  facet_wrap(~cut(wine$citric.acid, 4), ncol=2) +
+  theme(legend.position = 'bottom', aspect.ratio = 1)
+```
+
+Visually, I can't say there is much improvement in separation then the previous three. We can see the separation of the high-quality and low-quality wine by looking at the colour of the dots. 
+
+However, there is still a lot of unexplained variances. When the rating of wine quality is close to each other, it becomes much hard to tell them apart.

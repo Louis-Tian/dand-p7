@@ -1,0 +1,78 @@
+
+# Final Plots and Summary
+
+### Plot One
+```{r echo=FALSE, Plot_One, fig.cap='Correlation Matrix for red wine attributes'}
+wine$quality = as.numeric(wine$quality)
+cor_table = as.data.frame(cor(wine))
+cor_table$varA = rownames(cor_table)
+cor_table = gather(cor_table, varB, corr, -c(varA))
+ggplot(aes(x = varA, y=varB), data=cor_table) +
+  geom_point(aes_(size=abs(cor_table$corr), color=cor_table$corr),
+             show.legend = TRUE) +
+  scale_color_gradient2(limits=c(-1, 1), high='red', low='blue') +
+  labs(x="", y="") +
+  guides(color=guide_legend(title=""), size=guide_legend(title="")) + 
+  theme_classic() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = 'top', aspect.ratio = 1)
+```
+
+This visualisation provides a very compact visualisation for the correlation between the variables in the dataset. Both size and transparency of the circle are used to encode the magnitude of the correlation. The colour hue is used to represent the direction of the correlation. Using this visualisation, it is obvious to see that alcohol and volatile.acidity has the strongest linear relationship with the quality of wine.
+
+I choose this plot because it:
+* Draw comparisons.
+* Enable the reader to digest large amounts of information.
+
+### Plot Two
+```{r echo=FALSE, Plot_Two, fig.cap="Boxplots of alcohol content for various quality of wine"}
+makeBoxPlot('alcohol') + 
+  labs(y='Alcohol (% by volume)') +
+  labs(x='Quality (the higher the better)')
+```
+Given the relatively strong linear correlation ({r cor(wine$alcohol, wine$quality)}) that was discovered, I was somewhat surprised to see this box plot. The lowest mean quality. The lowest mean quality appears at the quality rating of 5. It almost seems the positive linear relationship only applies to mid to high-quality wine.
+
+I choose this plot because it,
+* Identify trends.
+* Clarify a gap between perception and reality.
+
+### Plot Three
+```{r, fig.cap='Explaining Wine Quality with Alcohol and Volatile Acidity'}
+wine$quality = factor(wine$quality)
+
+makeScatter("alcohol", 'volatile.acidity') +
+  labs(x='Alcohol (% by volume)', y='volatile acidity (acetic acid - g / dm^3)')
+```
+
+Using the divergent colour, one can see a clear seperation of lower quality and higher quality wine. 
+
+The high quality wine tends to have high alcohol content and low volatile acidity.
+
+However, there is still a lot of unexplained variations. There is not clear seperation bewteen wine that have close rating. For example, you can that the light brown and teal dots scattered somewhat randomly around the center of the plot. It is hard to tell them apart when the rating is close. 
+
+I choose this plot because it,
+* Draw comparisons and;
+* Explain a complicated finding.
+
+------
+
+# Reflection
+I started out the data exploration by calculating the correlation matrix. 
+In particular, I am interested to see, which variables have the strong linear relationship with the wine quality. I found, among all of the variables, alcohol content and volatile acidity, has the strongly linear relationship with wine quality. 
+
+Using this information, I did a simple linear regression on the data set and found that those two variables explain only 31% of the total variation in quality. 
+
+At this point, I suspected that there might be some non-linear relationship between quality and some variables. So I plotted one histogram, and one boxplot against quality, for every of the variable. Somewhat to my surprise, I didn't found any obvious and strong relationship. And despite the strong correlation, 
+I found the relationship between alcohol and quality is not that linear. 
+
+Finally, I made some scatterplots with the quality encoded using a divergent colour palette. It is quite clear to me that there is a clear separation between
+the high (rating above 5) and low quality (rating below 5). However, one can also see a lot of noise. 
+
+After the exploration, I think it is quite likely there simply isn't enough relevant data for actuate prediction. The qualities are measured as the average
+of ratings by at least three wine experts. While one might argue, when this average is taken from a large number of experts' ratings, it forms a somewhat 
+objective measurement, thanks to the Central Limit Theorem. However, when there is only a small number of experts' ratings are in deriving the wine quality, 
+the rating became very subjective and heavily influenced by the preference of the individual judges. This is especially true in our case because the rating is not even derived from the group of experts for all the wines. An expert might
+systematically wine lower than the others experts or vice versa. 
+
+A much better prediction might be possible if more granular details are available in the dataset, for example, each experts rating on each wine instead
+of the just a simple average. T

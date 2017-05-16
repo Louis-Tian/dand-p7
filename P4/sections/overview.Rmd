@@ -1,0 +1,79 @@
+
+# A Quick Overview of the Dataset
+===
+
+This dataset contains a total of `r dim(wine)[1]` rows and `r dim(wine)[2]` 
+columns.
+
+```{r echo=FALSE}
+knitr::kable(
+  t(head(wine, 5)), caption ='
+  **Top 5 rows** <br> 
+  for aestheticity, the data is transposed is transpose
+  ', 
+  digits = 3,
+  format = 'html'
+)
+```
+
+Each row of the dataset represents a observation of red wine. columns contains 
+various objective phyciochemical attributes of the wines as well as average 
+quality score. 
+
+```{r, echo=FALSE, results='asis'}
+summary.table <- do.call(cbind, lapply(wine, summary))
+knitr::kable( t(summary.table), align='c', digits = 3, 
+              caption='Basic Statistics')
+```
+
+The table above provided some high level statistics for each variables in the 
+dataset.
+
+# Correlation Matrix
+
+The first step towards understanding the relationship between wine quality and 
+physicochemical attributes is to compute the correlations. However, a large 
+correlation matrix is hard to read and decipher, so I created a visualisation 
+for the correlation matrix.
+
+```{r fig.cap='Visualise Correlation Matrix'}
+wine$quality = as.numeric(wine$quality)
+cor_table = as.data.frame(cor(wine))
+cor_table$varA = rownames(cor_table)
+cor_table = gather(cor_table, varB, corr, -c(varA))
+ggplot(aes(x = varA, y=varB), data=cor_table) +
+  geom_point(aes_(size=abs(cor_table$corr), color=cor_table$corr),
+             show.legend = TRUE) +
+  scale_color_gradient2(limits=c(-1, 1), high='red', low='blue') +
+  labs(x="", y="") +
+  guides(color=guide_legend(title=""), size=guide_legend(title="")) + 
+  theme_classic() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = 'top', aspect.ratio = 1)
+```
+
+This correlation matrix visualisation uses, both size and color saturation to 
+represent magnitude of the correlations. It uses colour hue to represent the 
+direction of the correlations.
+
+Using this correlation matrix, it is easy to see that alcohol and 
+volatile.acidity has the strongest linear relationship with the quality of wine.
+Also, I found it interesting and so what surprising that the residual sugar have
+no correlation with the quality. 
+
+I wonder how good a linear model based on this two variables will be.
+
+```{r kable, results = 'asis'}
+m1 <- lm(quality~alcohol + volatile.acidity ,data=wine)
+stargazer(m1, type='html')
+```
+
+The R^2 is only 0.31, which is definitely note good enough. 
+
+The linear regression is only good if the relationship is actually linear. 
+Given the poor performance of our simple linear model, I need to turn my 
+attention to non-linear relationship.
+
+Next, I will explore each phyciochemical attribute individually. 
+Using visualisation, I hope I can uncover some non-linear relationships. 
+
